@@ -1,5 +1,5 @@
 /*
-Twitterprint demo sketch: monitors one or more Twitter accounts
+Gutenbird demo sketch: monitors one or more Twitter accounts
 for changes, displaying updates on attached thermal printer.
 Written by Adafruit Industries.  MIT license.
 
@@ -28,9 +28,10 @@ http://www.adafruit.com/products/600 Printer starter pack
 // Global stuff --------------------------------------------------------------
 
 const int
-  printer_RX_Pin  = 5,           // Printer connection: green wire
-  printer_TX_Pin  = 6,           // Printer connection: yellow wire
-  printer_Ground  = 7,           // Printer connection: black wire
+  printer_RX_Pin  = 2,           // Printer connection: green wire
+  printer_TX_Pin  = 3,           // Printer connection: yellow wire
+  printer_Ground  = 4,           // Printer connection: black wire
+  led_pin         = 5,           // To status LED (hardware PWM pin)
   maxTweets       = 5;           // Limit tweets printed; avoid runaway output
 const unsigned long              // Time limits, expressed in milliseconds:
   pollingInterval = 60L * 1000L, // Note: Twitter server will allow 150/hr max
@@ -48,6 +49,10 @@ EthernetClient
   client;
 char
   *serverName  = "search.twitter.com",
+  // queryString can be any valid Twitter API search string, including
+  // boolean operators.  See https://dev.twitter.com/docs/using-search
+  // for options and syntax.  Funny characters do NOT need to be URL
+  // encoded here -- the sketch takes care of that.
   *queryString = "from:Adafruit",
   lastId[21],    // 18446744073709551615\0 (64-bit maxint as string)
   timeStamp[32], // WWW, DD MMM YYYY HH:MM:SS +XXXX\0

@@ -1,4 +1,4 @@
-Twitterprint demo sketch: monitors one or more Twitter accounts
+Gutenbird demo sketch: monitors one or more Twitter accounts
 for changes, displaying updates on attached thermal printer.
 Written by Adafruit Industries.  MIT license.
 
