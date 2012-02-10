@@ -9,12 +9,12 @@ Also requires Adafruit Thermal Printer Library:
 http://github.com/adafruit/Thermal-Printer-Library
 
 Required hardware includes an Ethernet-connected Arduino board such
-as the Arduino Uno Ethernet or other Arduino-compatible board with an
+as the Arduino Ethernet or other Arduino-compatible board with an
 Arduino Ethernet Shield, plus an Adafruit Mini Thermal Receipt printer
 and all related power supplies and cabling.
 
 Resources:
-http://www.adafruit.com/products/418 Arduino Ethernet Uno
+http://www.adafruit.com/products/418 Arduino Ethernet
 http://www.adafruit.com/products/284 FTDI Friend
 http://www.adafruit.com/products/201 Arduino Uno
 http://www.adafruit.com/products/201 Ethernet Shield
