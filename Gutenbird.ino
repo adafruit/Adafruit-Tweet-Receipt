@@ -347,10 +347,10 @@ int unidecode(byte len) {
 int timedRead(void) {
   int           c;
   unsigned long start = millis();
-  do {
-    if((c = client.read()) >= 0) return c;
-  } while((millis() - start) < 5000L);
-  return -1; // Timed out
+
+  while((!client.available()) && ((millis() - start) < 5000L));
+
+  return client.read();  // -1 on timeout
 }
 
 // ---------------------------------------------------------------------------
