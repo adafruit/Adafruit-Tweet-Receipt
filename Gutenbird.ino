@@ -22,7 +22,7 @@ http://www.adafruit.com/products/600 Printer starter pack
 
 #include <SPI.h>
 #include <Ethernet.h>
-#include <Thermal.h>
+#include <Adafruit_Thermal.h>
 #include <SoftwareSerial.h>
 
 // Global stuff --------------------------------------------------------------
@@ -38,7 +38,7 @@ const unsigned long              // Time limits, expressed in milliseconds:
   pollingInterval = 60L * 1000L, // Note: Twitter server will allow 150/hr max
   connectTimeout  = 15L * 1000L, // Max time to retry server link
   responseTimeout = 15L * 1000L; // Max time to wait for data from server
-Thermal
+Adafruit_Thermal
   printer(printer_RX_Pin, printer_TX_Pin);
 byte
   sleepPos = 0, // Current "sleep throb" table position
