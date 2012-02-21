@@ -2,6 +2,11 @@ Gutenbird demo sketch: monitors one or more Twitter accounts
 for changes, displaying updates on attached thermal printer.
 Written by Adafruit Industries.  MIT license.
 
+******************************************************
+Designed for the Adafruit Internet of Things printer
+Pick one up at http://www.adafruit.com/products/717 !
+******************************************************
+
 REQUIRES ARDUINO IDE 1.0 OR LATER -- Back-porting is not likely to
 occur, as the code is deeply dependent on the Stream class, etc.
 
