@@ -11,7 +11,7 @@ REQUIRES ARDUINO IDE 1.0 OR LATER -- Back-porting is not likely to
 occur, as the code is deeply dependent on the Stream class, etc.
 
 Also requires Adafruit Thermal Printer Library:
-http://github.com/adafruit/Thermal-Printer-Library
+https://github.com/adafruit/Adafruit-Thermal-Printer-Library
 
 Required hardware includes an Ethernet-connected Arduino board such
 as the Arduino Ethernet or other Arduino-compatible board with an
