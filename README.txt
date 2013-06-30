@@ -1,6 +1,6 @@
 Gutenbird demo sketch: monitors one or more Twitter accounts
 for changes, displaying updates on attached thermal printer.
-Written by Adafruit Industries.  MIT license.
+Written by Adafruit Industries, distributed under BSD License.
 
 ******************************************************
 Designed for the Adafruit Internet of Things printer
@@ -11,7 +11,9 @@ REQUIRES ARDUINO IDE 1.0 OR LATER -- Back-porting is not likely to
 occur, as the code is deeply dependent on the Stream class, etc.
 
 Also requires Adafruit Thermal Printer Library:
-https://github.com/adafruit/Adafruit-Thermal-Printer-Library
+  https://github.com/adafruit/Adafruit-Thermal-Printer-Library
+and Adafruit fork of Peter Knight's Cryptosuite library for Arduino:
+  https://github.com/adafruit/Cryptosuite
 
 Required hardware includes an Ethernet-connected Arduino board such
 as the Arduino Ethernet or other Arduino-compatible board with an
@@ -25,3 +27,15 @@ http://www.adafruit.com/products/201 Arduino Uno
 http://www.adafruit.com/products/201 Ethernet Shield
 http://www.adafruit.com/products/597 Mini Thermal Receipt Printer
 http://www.adafruit.com/products/600 Printer starter pack
+
+Uses Twitter 1.1 API application-only authentication.  This REQUIRES a
+Twitter account and some account configuration.  Start at dev.twitter.com,
+sign in with your Twitter credentials, select "My Applications" from the
+avatar drop-down menu at the top right, then "Create a new application."
+Provide a name, description, placeholder URL and complete the captcha,
+after which you'll be provided a "consumer key" and "consumer secret" for
+your app.  Select "Create access token" to also generate an "access token"
+and "access token secret."  ALL FOUR STRINGS must be copied to the correct
+positions in the globals below, and configure the search string to your
+liking.  DO NOT SHARE your keys or secrets!  If you put code on Github or
+other public repository, replace them with dummy strings.
