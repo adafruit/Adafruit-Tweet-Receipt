@@ -70,6 +70,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <Adafruit_Thermal.h>
 #include <SoftwareSerial.h>
 
+// Similar to F(), but for PROGMEM string pointers rather than literals
+#define F2(progmem_ptr) (const __FlashStringHelper *)progmem_ptr
+
 // Configurable globals.  Edit to your needs. -------------------------------
 
 const char PROGMEM
@@ -155,11 +158,11 @@ void setup() {
 
   // Initialize Ethernet connection.  Request dynamic
   // IP address, fall back on fixed IP if that fails:
-  print_P(Serial, PSTR("Initializing Ethernet..."));
+  Serial.print(F("Initializing Ethernet..."));
   if(Ethernet.begin(mac)) {
-    print_P(Serial, PSTR("OK\r\n"));
+    Serial.print(F("OK\r\n"));
   } else {
-    print_P(Serial, PSTR("\r\nno DHCP response, using static IP address."));
+    Serial.print(F("\r\nno DHCP response, using static IP address."));
     Ethernet.begin(mac, ip);
   }
 
@@ -178,7 +181,7 @@ void loop() {
   char                      nonce[9],       // 8 random digits + NUL
                             searchTime[11], // 32-bit int + NUL
                             b64[29];
-  unsigned long startTime, t;
+  unsigned long             startTime, t;
   static const char PROGMEM b64chars[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -194,11 +197,11 @@ void loop() {
   sprintf(searchTime, "%ld", currentTime);
 
   // Some debugging/testing/status stuff
-  print_P(Serial, PSTR("  Current time: "));
+  Serial.print(F("  Current time: "));
   Serial.println(currentTime);
-  print_P(Serial, PSTR("  Last ID: "));
+  Serial.print(F("  Last ID: "));
   Serial.println(lastId);
-  print_P(Serial, PSTR("  Max tweets: "));
+  Serial.print(F("  Max tweets: "));
   Serial.println(maxTweets);
 
   Sha1.initHmac_P((uint8_t *)signingKey, sizeof(signingKey) - 1);
@@ -215,22 +218,22 @@ void loop() {
   // encoding.  Most reside in PROGMEM, not RAM.  This is bending a LOT of
   // rules of Good and Proper Authentication and would land you an 'F' in
   // Comp Sci class, but it handles the required task and is VERY compact.
-  print_P(Sha1, PSTR("GET&http%3A%2F%2F"));
+  Sha1.print(F("GET&http%3A%2F%2F"));
   Sha1.print(host);
   urlEncode(Sha1, endpoint, true, false);
-  print_P(Sha1, PSTR("&count%3D"));
+  Sha1.print(F("&count%3D"));
   Sha1.print(maxTweets);
-  print_P(Sha1, PSTR("%26include_entities%3D0%26oauth_consumer_key%3D"));
-  print_P(Sha1, consumer_key);
-  print_P(Sha1, PSTR("%26oauth_nonce%3D"));
+  Sha1.print(F("%26include_entities%3D0%26oauth_consumer_key%3D"));
+  Sha1.print(F2(consumer_key));
+  Sha1.print(F("%26oauth_nonce%3D"));
   Sha1.print(nonce);
-  print_P(Sha1, PSTR("%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D"));
+  Sha1.print(F("%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D"));
   Sha1.print(searchTime);
-  print_P(Sha1, PSTR("%26oauth_token%3D"));
-  print_P(Sha1, access_token);
-  print_P(Sha1, PSTR("%26oauth_version%3D1.0%26q%3D"));
+  Sha1.print(F("%26oauth_token%3D"));
+  Sha1.print(F2(access_token));
+  Sha1.print(F("%26oauth_version%3D1.0%26q%3D"));
   urlEncode(Sha1, queryString, true, true);
-  print_P(Sha1, PSTR("%26since_id%3D"));
+  Sha1.print(F("%26since_id%3D"));
   Sha1.print(lastId);
 
   // base64-encode SHA-1 hash output.  This is NOT a general-purpose base64
@@ -249,59 +252,59 @@ void loop() {
   b64[i++] = '=';
   b64[i++] = 0;
 
-  print_P(Serial, PSTR("Connecting to server..."));
+  Serial.print(F("Connecting to server..."));
   startTime = millis();
   while((client.connect(host, 80) == false) &&
     ((millis() - startTime) < connectTimeout));
 
   if(client.connected()) { // Success!
-    print_P(Serial, PSTR("OK\r\nIssuing HTTP request..."));
+    Serial.print(F("OK\r\nIssuing HTTP request..."));
 
     // Unlike the hash prep, parameters in the HTTP request don't require
     // sorting, but are still somewhat ordered by function: GET parameters
     // (search values), HTTP headers and Oauth credentials.
-    print_P(client, PSTR("GET "));
-    print_P(client, endpoint);
-    print_P(client, PSTR("?count="));
+    client.print(F("GET "));
+    client.print(F2(endpoint));
+    client.print(F("?count="));
     client.print(maxTweets);
-    print_P(client, PSTR("&since_id="));
+    client.print(F("&since_id="));
     client.print(lastId);
-    print_P(client, PSTR("&include_entities=0&q="));
+    client.print(F("&include_entities=0&q="));
     urlEncode(client, queryString, true, false);
-    print_P(client, PSTR(" HTTP/1.1\r\nHost: "));
+    client.print(F(" HTTP/1.1\r\nHost: "));
     client.print(host);
-    print_P(client, PSTR("\r\nUser-Agent: "));
-    print_P(client, agent);
-    print_P(client, PSTR("\r\nConnection: close\r\n"
-                           "Content-Type: application/x-www-form-urlencoded;charset=UTF-8\r\n"
-                           "Authorization: Oauth oauth_consumer_key=\""));
-    print_P(client, consumer_key);
-    print_P(client, PSTR("\", oauth_nonce=\""));
+    client.print(F("\r\nUser-Agent: "));
+    client.print(F2(agent));
+    client.print(F("\r\nConnection: close\r\n"
+                       "Content-Type: application/x-www-form-urlencoded;charset=UTF-8\r\n"
+                       "Authorization: Oauth oauth_consumer_key=\""));
+    client.print(F2(consumer_key));
+    client.print(F("\", oauth_nonce=\""));
     client.print(nonce);
-    print_P(client, PSTR("\", oauth_signature=\""));
+    client.print(F("\", oauth_signature=\""));
     urlEncode(client, b64, false, false);
-    print_P(client, PSTR("\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\""));
+    client.print(F("\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\""));
     client.print(searchTime);
-    print_P(client, PSTR("\", oauth_token=\""));
-    print_P(client, access_token);
-    print_P(client, PSTR("\", oauth_version=\"1.0\"\r\n\r\n"));
+    client.print(F("\", oauth_token=\""));
+    client.print(F2(access_token));
+    client.print(F("\", oauth_version=\"1.0\"\r\n\r\n"));
 
-    print_P(Serial, PSTR("OK\r\nAwaiting results (if any)..."));
+    Serial.print(F("OK\r\nAwaiting results (if any)..."));
     t = millis();
     while((!client.available()) && ((millis() - t) < responseTimeout));
     if(client.available()) { // Response received?
       // Could add HTTP response header parsing here (400, etc.)
       if(client.find("\r\n\r\n")) { // Skip HTTP response header
-        print_P(Serial, PSTR("OK\r\nProcessing results...\r\n"));
+        Serial.print(F("OK\r\nProcessing results...\r\n"));
         resultsDepth = 0;
         jsonParse(0, 0);
-      } else print_P(Serial, PSTR("response not recognized.\r\n"));
-    } else   print_P(Serial, PSTR("connection timed out.\r\n"));
-    print_P(Serial, PSTR("Done.\r\n"));
+      } else Serial.print(F("response not recognized.\r\n"));
+    } else   Serial.print(F("connection timed out.\r\n"));
+    Serial.print(F("Done.\r\n"));
 
     client.stop();
   } else { // Couldn't contact server
-    print_P(Serial, PSTR("failed\r\n"));
+    Serial.print(F("failed\r\n"));
   }
 
   // Update time in seconds.  Once per day, re-sync with time server
@@ -321,11 +324,11 @@ void loop() {
   // access, parsing, printing and LED pause above.
   t = millis() - startTime;
   if(t < pollingInterval) {
-    print_P(Serial, PSTR("Pausing..."));
+    Serial.print(F("Pausing..."));
     sleepPos = sizeof(sleepTab); // Resume following brightest position
     TIMSK1 |= _BV(TOIE1); // Re-enable Timer1 interrupt for sleep throb
     delay(pollingInterval - t);
-    print_P(Serial, PSTR("done\r\n"));
+    Serial.print(F("done\r\n"));
   }
 }
 
@@ -361,11 +364,11 @@ boolean jsonParse(int depth, byte endChar) {
         printer.sleep();
 
         // Dump to serial console as well
-        print_P(Serial, PSTR("  User: "));
+        Serial.print(F("  User: "));
         Serial.println(fromUser);
-        print_P(Serial, PSTR("  Text: "));
+        Serial.print(F("  Text: "));
         Serial.println(msgText);
-        print_P(Serial, PSTR("  Time: "));
+        Serial.print(F("  Time: "));
         Serial.println(timeStamp);
 
         // Clear strings for next object
@@ -476,12 +479,6 @@ int timedRead(void) {
   return client.read();  // -1 on timeout
 }
 
-// print_P is not implemented in Print class; here's a workaround function
-void print_P(Print &p, const char *addr) {
-  char c;
-  while((c = pgm_read_byte(addr++))) p.write(c);
-}
-
 // URL-encoding output function for Print class.
 // Input from RAM or PROGMEM (flash).  Double-encoding is a weird special
 // case for Oauth (encoded strings get encoded a second time).
@@ -516,7 +513,7 @@ unsigned long getTime(void) {
   byte          buf[48];
   unsigned long t = 0L;
 
-  print_P(Serial, PSTR("Polling time server..."));
+  Serial.print(F("Polling time server..."));
 
   udp.begin(8888);
   dns.begin(Ethernet.dnsServerIP());
@@ -544,11 +541,11 @@ unsigned long getTime(void) {
            ((unsigned long)buf[41] << 16) |
            ((unsigned long)buf[42] <<  8) |
             (unsigned long)buf[43]) - 2208988800UL;
-      print_P(Serial, PSTR("OK\r\n"));
+      Serial.print(F("OK\r\n"));
     }
   }
   udp.stop();
-  if(!t) print_P(Serial, PSTR("error\r\n"));
+  if(!t) Serial.print(F("error\r\n"));
 
   return t;
 }
