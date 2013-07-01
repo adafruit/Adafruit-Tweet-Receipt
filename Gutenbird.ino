@@ -389,7 +389,10 @@ boolean jsonParse(int depth, byte endChar) {
         if       (!strcasecmp(name, "max_id_str")) {
           strncpy(lastId, value, sizeof(lastId)-1);
         } else if(!strcasecmp(name, "created_at")) {
-          strncpy(timeStamp, value, sizeof(timeStamp)-1);
+          // Use created_at value for tweet, not user
+          if(depth == (resultsDepth + 1)) {
+            strncpy(timeStamp, value, sizeof(timeStamp)-1);
+          }
         } else if(!strcasecmp(name, "screen_name")) {
           strncpy(fromUser, value, sizeof(fromUser)-1);
         } else if(!strcasecmp(name, "text")) {
