@@ -253,9 +253,9 @@ void loop() {
   b64[i++] = 0;
 
   Serial.print(F("Connecting to server..."));
-  startTime = millis();
+  t = millis();
   while((client.connect(host, 80) == false) &&
-    ((millis() - startTime) < connectTimeout));
+    ((millis() - t) < connectTimeout));
 
   if(client.connected()) { // Success!
     Serial.print(F("OK\r\nIssuing HTTP request..."));
@@ -555,8 +555,8 @@ ISR(TIMER1_OVF_vect, ISR_NOBLOCK) {
   // Sine table contains only first half...reflect for second half...
   analogWrite(led_pin, pgm_read_byte(&sleepTab[
     (sleepPos >= sizeof(sleepTab)) ?
-    ((sizeof(sleepTab) - 1) * 2 - sleepPos) : sleepPos]));
-  if(++sleepPos >= ((sizeof(sleepTab) - 1) * 2)) sleepPos = 0; // Roll over
+    (sizeof(sleepTab) * 2 - 1 - sleepPos) : sleepPos]));
+  if(++sleepPos >= (sizeof(sleepTab) * 2)) sleepPos = 0; // Roll over
   TIFR1 |= TOV1; // Clear Timer1 interrupt flag
 }
 
