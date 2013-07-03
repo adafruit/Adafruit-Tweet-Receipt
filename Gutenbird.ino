@@ -201,8 +201,6 @@ void loop() {
   Serial.println(currentTime);
   Serial.print(F("  Last ID: "));
   Serial.println(lastId);
-  Serial.print(F("  Max tweets: "));
-  Serial.println(maxTweets);
 
   Sha1.initHmac_P((uint8_t *)signingKey, sizeof(signingKey) - 1);
 
@@ -337,7 +335,6 @@ void loop() {
 boolean jsonParse(int depth, byte endChar) {
   int     c, i;
   boolean readName = true;
-
   for(;;) {
     while(isspace(c = timedRead())); // Scan past whitespace
     if(c < 0)        return false;   // Timeout
@@ -347,7 +344,6 @@ boolean jsonParse(int depth, byte endChar) {
       if(!jsonParse(depth + 1, '}')) return false;
       if(!depth)                     return true; // End of file
       if(depth == resultsDepth) { // End of object in results list
-
         // Output one tweet to printer
         printer.wake();
         printer.inverseOn();
