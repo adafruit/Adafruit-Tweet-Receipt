@@ -193,7 +193,7 @@ void loop() {
   analogWrite(led_pin, 255);
 
   // Initialize unique values for query
-  sprintf(nonce, "%04x%04x", random(), random());
+  sprintf(nonce, "%04x%04x", random() ^ currentTime, startTime ^ currentTime);
   sprintf(searchTime, "%ld", currentTime);
 
   // Some debugging/testing/status stuff
@@ -315,17 +315,15 @@ void loop() {
   // Sometimes network access & printing occurrs so quickly, the steady-on
   // LED wouldn't even be apparent, instead resembling a discontinuity in
   // the otherwise smooth sleep throb.  Keep it on at least 4 seconds.
-  t = millis() - startTime;
-  if(t < 4000L) delay(4000L - t);
+  while((millis() - startTime) < 4000UL);
 
   // Pause between queries, factoring in time already spent on network
   // access, parsing, printing and LED pause above.
-  t = millis() - startTime;
-  if(t < pollingInterval) {
+  if((millis() - startTime) < pollingInterval) {
     Serial.print(F("Pausing..."));
     sleepPos = sizeof(sleepTab); // Resume following brightest position
     TIMSK1 |= _BV(TOIE1); // Re-enable Timer1 interrupt for sleep throb
-    delay(pollingInterval - t);
+    while((millis() - startTime) < pollingInterval);
     Serial.print(F("done\r\n"));
   }
 }
