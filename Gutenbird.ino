@@ -391,6 +391,10 @@ boolean jsonParse(int depth, byte endChar) {
           strncpy(fromUser, value, sizeof(fromUser)-1);
         } else if(!strcasecmp(name, "text")) {
           strncpy(msgText, value, sizeof(msgText)-1);
+        } else if((!strcasecmp(name, "id_str")) &&
+                  (strcasecmp(value, lastId) > 0) &&
+                  (depth == (resultsDepth + 1))) {
+          strncpy(lastId, value, sizeof(lastId)-1);
         }
       }
     } else if(c == ':') { // Separator between name:value
