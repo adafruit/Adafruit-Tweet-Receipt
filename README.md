@@ -6,11 +6,9 @@ The files in this repository accompanied an [Adafruit Learning System](https://l
 be built https://learn.adafruit.com/internet-of-things-printer/download 
 This tutorial is out of date. It is highly suggested that other tutorials be consulted for more modern implementations. This code is being hosted for legacy purposes.
 
-All code MIT License, please keep attribution to Adafruit Industries
+All code BSD License, please keep attribution to Adafruit Industries
 
 Please consider buying your parts at [Adafruit.com](https://www.adafruit.com) to support open source code.
-
-
 
 ## IMPORTANT: THIS SOFTWARE CURRENTLY DOES NOT WORK
 
